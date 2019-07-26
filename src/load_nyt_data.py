@@ -40,9 +40,14 @@ def main():
     files = os.listdir(DATA_DIR)
 
     dl = NYTDocLoader()
+    document_ids = []
+    section_names = []
     n_files_written = 0
     for d in dl:
         id = d['_id']
+        sn = d['section_name']
+        document_ids.append(id)
+        section_names.append(sn)
         if id + '.txt' not in files:
             content = ' '.join(clean_non_ascii(d['content']))
             with open(os.path.join(DATA_DIR,id + '.txt'), 'w') as f:
@@ -50,6 +55,11 @@ def main():
             n_files_written += 1
         else:
             pass
+    if 'section_names.csv' not in files:
+        with open(os.path.join(DATA_DIR, 'section_names.csv'), 'w') as g:
+            for _ in zip(document_ids, section_names):
+                g.write(",".join(_) + '\n')
+        n_files_written += 1
     print("Number of files written: ", n_files_written)
 
 if __name__ == '__main__':
